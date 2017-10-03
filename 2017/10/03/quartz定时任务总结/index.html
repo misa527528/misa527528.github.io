@@ -68,7 +68,7 @@
 
 
 
-  <meta name="keywords" content="Hexo, NexT" />
+  <meta name="keywords" content="quartz," />
 
 
 
@@ -79,12 +79,17 @@
 
 
 
-<meta property="og:type" content="website">
-<meta property="og:title" content="Hexo">
-<meta property="og:url" content="http://yoursite.com/index.html">
+<meta name="description" content="#spring+quartz实现定时任务总结 一、quartz中定时任务的分类quartz中按任务存储的方式划分，可将定时任务分为两类：存储在内存中的、持久化到数据库中的。  存储在内存中的定时任务如果在应用中重启之后将会丢失，但实现起来较方便。 持久化到数据库中的定时任务在应用重启之后不会丢失，但需要在DB中建立数据表，可以通过配置的方式将任务持久化到数据表中，应用重启之后可以再次启动。  二、">
+<meta name="keywords" content="quartz">
+<meta property="og:type" content="article">
+<meta property="og:title" content="spring+quartz实现定时任务总结">
+<meta property="og:url" content="http://yoursite.com/2017/10/03/quartz定时任务总结/index.html">
 <meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="#spring+quartz实现定时任务总结 一、quartz中定时任务的分类quartz中按任务存储的方式划分，可将定时任务分为两类：存储在内存中的、持久化到数据库中的。  存储在内存中的定时任务如果在应用中重启之后将会丢失，但实现起来较方便。 持久化到数据库中的定时任务在应用重启之后不会丢失，但需要在DB中建立数据表，可以通过配置的方式将任务持久化到数据表中，应用重启之后可以再次启动。  二、">
+<meta property="og:updated_time" content="2017-10-03T16:27:52.658Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Hexo">
+<meta name="twitter:title" content="spring+quartz实现定时任务总结">
+<meta name="twitter:description" content="#spring+quartz实现定时任务总结 一、quartz中定时任务的分类quartz中按任务存储的方式划分，可将定时任务分为两类：存储在内存中的、持久化到数据库中的。  存储在内存中的定时任务如果在应用中重启之后将会丢失，但实现起来较方便。 持久化到数据库中的定时任务在应用重启之后不会丢失，但需要在DB中建立数据表，可以通过配置的方式将任务持久化到数据表中，应用重启之后可以再次启动。  二、">
 
 
 
@@ -114,13 +119,13 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/"/>
+  <link rel="canonical" href="http://yoursite.com/2017/10/03/quartz定时任务总结/"/>
 
 
 
 
 
-  <title>Hexo</title>
+  <title>spring+quartz实现定时任务总结 | Hexo</title>
   
 
 
@@ -139,8 +144,7 @@
     
   
 
-  <div class="container sidebar-position-left 
-  page-home">
+  <div class="container sidebar-position-left page-post-detail">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
@@ -213,9 +217,9 @@
         <div class="content-wrap">
           <div id="content" class="content">
             
-  <section id="posts" class="posts-expand">
+
+  <div id="posts" class="posts-expand">
     
-      
 
   
 
@@ -245,9 +249,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2017/10/03/quartz定时任务总结/" itemprop="url">spring+quartz实现定时任务总结</a></h1>
+          <h1 class="post-title" itemprop="name headline">spring+quartz实现定时任务总结</h1>
         
 
         <div class="post-meta">
@@ -297,9 +299,7 @@
       
 
       
-        
-          
-            <p>#spring+quartz实现定时任务总结</p>
+        <p>#spring+quartz实现定时任务总结</p>
 <h2 id="一、quartz中定时任务的分类"><a href="#一、quartz中定时任务的分类" class="headerlink" title="一、quartz中定时任务的分类"></a>一、quartz中定时任务的分类</h2><p>quartz中按任务存储的方式划分，可将定时任务分为两类：<strong>存储在内存中的</strong>、<strong>持久化到数据库中的</strong>。</p>
 <ul>
 <li>存储在内存中的定时任务如果在应用中重启之后将会丢失，但实现起来较方便。</li>
@@ -311,8 +311,6 @@
 <p>org.quartz.ObjectAlreadyExistsException:Unable to store Job : ‘DEFAULT.XXX’, because one already exists with this identification.<br>at org.quartz.simpl.RAMJobStore.storeJob(RAMJobStore.java:279)<br>at org.quartz.simpl.RAMJobStore.storeJobAndTrigger(RAMJobStore.java:251)<br>at org.quartz.core.QuartzScheduler.scheduleJob(QuartzScheduler.java:855)<br>at org.quartz.impl.StdScheduler.scheduleJob(StdScheduler.java:249)<br>…<br>```</p>
 <h2 id="四、教训"><a href="#四、教训" class="headerlink" title="四、教训"></a>四、教训</h2><p>上述的两种情况是在多线程并发访问的情况下才触发的，而quartz的实现又比较复杂，所以出现这种问题往往需要通过追查源码才能定位到。况且，多线程情况是大部分写作者不会考虑的，所以有部分书籍并没有先初始化key属性，归根到底只能说写作的人也是人，不可能每个部分都去深究源码，所以也有可能被“误导”。最好还是通过quartz官方提供的samples进行学习，因为对于上述的问题，quartz官方提供的samples中都有显示对key进行初始化。</p>
 
-          
-        
       
     </div>
     
@@ -327,142 +325,36 @@
 
     <footer class="post-footer">
       
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/10/03/hello-world/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="John Doe">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Hexo">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2017/10/03/hello-world/" itemprop="url">Hello World</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Veröffentlicht am</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-10-03T23:46:44+08:00">
-                2017-10-03
-              </time>
-            
-
-            
-
-            
-          </span>
-
+        <div class="post-tags">
           
-
+            <a href="/tags/quartz/" rel="tag"># quartz</a>
           
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
         </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>Welcome to <a href="https://hexo.io/" target="_blank" rel="external">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/" target="_blank" rel="external">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html" target="_blank" rel="external">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues" target="_blank" rel="external">GitHub</a>.</p>
-<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ hexo new <span class="string">"My New Post"</span></div></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/writing.html" target="_blank" rel="external">Writing</a></p>
-<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ hexo server</div></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/server.html" target="_blank" rel="external">Server</a></p>
-<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ hexo generate</div></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/generating.html" target="_blank" rel="external">Generating</a></p>
-<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ hexo deploy</div></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/deployment.html" target="_blank" rel="external">Deployment</a></p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
       
 
       
       
-        <div class="post-eof"></div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/10/03/hello-world/" rel="next" title="Hello World">
+                <i class="fa fa-chevron-left"></i> Hello World
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
       
     </footer>
   </div>
@@ -472,10 +364,11 @@
   </article>
 
 
-    
-  </section>
 
-  
+    <div class="post-spread">
+      
+    </div>
+  </div>
 
 
           </div>
@@ -483,6 +376,8 @@
 
 
           
+  
+
 
         </div>
         
@@ -503,8 +398,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Inhaltsverzeichnis
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Übersicht
+          </li>
+        </ul>
+      
 
-      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
+      <section class="site-overview-wrap sidebar-panel">
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
             
@@ -557,6 +461,22 @@
         </div>
       </section>
 
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#一、quartz中定时任务的分类"><span class="nav-number">1.</span> <span class="nav-text">一、quartz中定时任务的分类</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#二、在spring中使用quartz添加定时任务"><span class="nav-number">2.</span> <span class="nav-text">二、在spring中使用quartz添加定时任务</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#四、教训"><span class="nav-number">3.</span> <span class="nav-text">四、教训</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
       
 
       
@@ -676,6 +596,10 @@
   
 
   
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.3"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.3"></script>
+
+
 
   
 
